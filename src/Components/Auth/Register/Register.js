@@ -1,65 +1,68 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import 'antd/dist/antd.css';
-import {Button, Form, Input, Select, Checkbox, Divider} from 'antd';
-import {LockOutlined, UserOutlined, InboxOutlined} from '@ant-design/icons';
+import {Button, Checkbox, Divider, Form, Input, Select} from 'antd';
+import {LockOutlined, UserOutlined} from '@ant-design/icons';
+import axios from "axios";
+import {useHistory} from "react-router-dom";
 
-const layout = {
-    labelCol: {
-        span: 10,
-    },
-    wrapperCol: {
-        span: 4,
-    },
-};
-const tailLayout = {
-    wrapperCol: {
-        offset: 0,
-        span: 0,
-    },
-};
 
 let yearOfBirths = Array.from({length: 102}, (x, i) => i + 1920);
-const categories = ["Chính trị", "Xã hôi", "Văn hoá", "Kinh tế", "Giáo dục", "Khoa học", "Công nghệ", "Y tế", "Thể thao", "Giải trí"];
+
 const {Option} = Select
-const CheckboxGroup = Checkbox.Group;
 export const Register = () => {
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                console.log('Received values of form: ', values);
-            }
-        });
+    const history = useHistory()
+    const [categories, setCategories] = useState([]);
+
+    function fetchData() {
+        axios.get("http://localhost:8080/api/common/category")
+            .then(res => {
+                setCategories(res.data);
+            })
+            .catch(error => console.log(error))
     }
 
-    const [checkedList, setCheckedList] = React.useState([]);
-    const [indeterminate, setIndeterminate] = React.useState(true);
-    const [checkAll, setCheckAll] = React.useState(false);
+    useEffect(() => {
+        fetchData();
+        console.log(setCategories);
+    }, []);
 
-    const onChange = list => {
-        setCheckedList(list);
-        setIndeterminate(!!list.length && list.length < categories.length);
-        setCheckAll(list.length === categories.length);
-    };
 
-    const onCheckAllChange = e => {
-        setCheckedList(e.target.checked ? categories : []);
-        setIndeterminate(false);
-        setCheckAll(e.target.checked);
-    };
+    const handleFinish = (values) => {
+        console.log({...values, categories: init});
+        let data = {
+            username: values.username,
+            password: values.password,
+            year_of_birth: values.year_of_birth,
+            category_ids: init
+        }
+        axios.post('http://localhost:8080/api/auth/register', data, {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+            .then(res => {
+                if (res.status === 201) {
+                    history.push("/login")
+                }
+            })
+            .catch(error => console.log(error))
+    }
+    const [checkAll, setCheckAll] = useState(false);
+    const [init, setInit] = useState([]);
+
 
     return (
+        <div className={'login-form-wrapper'}>
+            <div>
         <Form
-            onSubmit={handleSubmit}
+            onFinish={handleFinish}
             className='login-form'
-            {...layout}
             name='login'
             initialValues={{
                 remember: true,
             }
             }>
             <Form.Item
-                label='Tên đăng nhập'
                 name='username'
                 rules={[
                     {
@@ -73,7 +76,6 @@ export const Register = () => {
                 />
             </Form.Item>
             <Form.Item
-                label='Mật khẩu'
                 name='password'
                 rules={[
                     {
@@ -82,29 +84,35 @@ export const Register = () => {
                     },
                 ]}
             >
-                <Input prefix={<LockOutlined style={{fontsize: 13}}/>}
+                <Input.Password prefix={<LockOutlined style={{fontsize: 13}}/>}
                        type={"password"}
                        placeholder={"Mật khẩu"}
                 />
             </Form.Item>
             <Form.Item
-                label='Nhập lại mật khẩu'
                 name='re-password'
                 rules={[
                     {
                         required: true,
                         message: 'Nhập lại mật khẩu',
                     },
+                    ({ getFieldValue }) => ({
+                        validator(rule, value) {
+                            if (!value || getFieldValue('password') === value) {
+                                return Promise.resolve();
+                            }
+                            return Promise.reject('Mật khẩu không khớp!');
+                        },
+                    })
                 ]}
             >
-                <Input prefix={<LockOutlined style={{fontsize: 13}}/>}
+                <Input.Password prefix={<LockOutlined style={{fontsize: 13}}/>}
                        type={"password"}
                        placeholder={"Nhập lại mật khẩu"}
                 />
             </Form.Item>
             <Form.Item
-                label={"Năm sinh"}
-                name={"yearOfBirth"}
+                name={"year_of_birth"}
                 rules={[
                     {
                         required: true,
@@ -121,28 +129,42 @@ export const Register = () => {
                 </Select>
             </Form.Item>
 
-            <Form.Item
-                label="Email"
-                name="email"
-            >
-                <Input prefix={<InboxOutlined style={{fontsize: 13}}/>}
-                       type={"email"}
-                       placeholder={"Email"}
-                />
-            </Form.Item>
-
-            <>
-                <Checkbox indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll}>
+            <div>
+                <Checkbox
+                    checked={checkAll}
+                    onChange={(e) => {
+                        setCheckAll(e.target.checked);
+                        e.target.checked
+                            ? setInit(categories.map((category) => category.id))
+                            : setInit([]);
+                    }}
+                >
                     Chọn tất cả
                 </Checkbox>
-                <CheckboxGroup options={categories} value={checkedList} onChange={onChange} />
-            </>
-            <Divider />
-            <Form.Item {...tailLayout}>
+                <Checkbox.Group
+                    value={init}
+                    onChange={(e) => {
+                        setInit(e);
+                        setCheckAll(e.length === categories.length);
+                    }}
+                >
+                    {categories.map((category) => (
+                        <span>
+                          <Checkbox value={category.id} key={category.id}>
+                            {category.description}
+                          </Checkbox>
+                         </span>
+                    ))}
+                </Checkbox.Group>
+            </div>
+            <Divider/>
+            <Form.Item >
                 <Button type="primary" htmlType="submit">
                     ĐĂNG KÝ
                 </Button>
             </Form.Item>
         </Form>
+            </div>
+        </div>
     );
 };

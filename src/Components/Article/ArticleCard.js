@@ -1,12 +1,22 @@
-import { Card } from 'antd';
+import {Card} from 'antd';
+import './ArticleCard.css'
+import {Link} from "react-router-dom";
+import Moment from "react-moment";
 
-export const ArticleCard = () => {
+export const ArticleCard = ({article}) => {
     return (
-        <Card title="Default size card" style={{ width: 400, textAlign: "left", margin: 30}}>
-            <p>Card content</p>
-            <p>Card content</p>
-            <p>Card content</p>
-            <a>Xem thêm...</a>
-        </Card>
+        <div className={"article-card"}>
+            <Link to={`/article/${article.id}`}>
+                <Card title={article.title} style={{textAlign: "left"}}
+
+                >
+                    <small style={{textAlign: 'right', display: "block"}}>
+                        <Moment format={"DD/MM/YYYY hh:mm"}>{article.time}</Moment>
+                    </small>
+                    <p className={'line-clamp'}>{article.content} </p>
+                </Card>
+            </Link>
+        </div>
+
     )
 }

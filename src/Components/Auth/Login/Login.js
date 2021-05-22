@@ -1,44 +1,47 @@
-import React from 'react';
+import React, {useState} from 'react';
 import 'antd/dist/antd.css';
-import {Form, Input, Button, Checkbox} from 'antd';
-import {UserOutlined, LockOutlined} from '@ant-design/icons';
+import {Button, Form, Input} from 'antd';
+import {LockOutlined, UserOutlined} from '@ant-design/icons';
+import axios from "axios";
+import {Redirect} from 'react-router-dom';
+import './Login.css'
 
-const layout = {
-    labelCol: {
-        span: 10,
-    },
-    wrapperCol: {
-        span: 4,
-    },
-};
-const tailLayout = {
-    wrapperCol: {
-        offset: 0,
-        span: 0,
-    },
-};
+export const Login = ({isLogin, setIsLogin}) => {
+    const [loading, setLoading] = useState(false);
+    const onFinish = (values) => {
+        setLoading(true);
+        axios.post('http://localhost:8080/api/auth/login', values, {
+        })
+            .then(res => {
+                localStorage.setItem("token", res.data['accessToken']);
+                console.log("---", res.data['accessToken']);
+                setIsLogin(true);
+                setLoading(false);
 
-export const Login = () => {
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                console.log('Received values of form: ', values);
-            }
-        });
+            })
+            .catch(error => {
+                console.log(error)
+                setLoading(false);
+            })
     }
+
+    if (isLogin) {
+        return (<Redirect to={"/"}/>)
+    }
+
     return (
+        <div
+            className='login-form-wrapper'
+        >
+            <div>
         <Form
-            onSubmit={handleSubmit}
-            className='login-form'
-            {...layout}
+            onFinish={onFinish}
             name='login'
             initialValues={{
                 remember: true,
             }
             }>
             <Form.Item
-                label='Tên đăng nhập'
                 name='username'
                 rules={[
                     {
@@ -52,7 +55,6 @@ export const Login = () => {
                        />
             </Form.Item>
             <Form.Item
-                label='Mật khẩu'
                 name='password'
                 rules={[
                     {
@@ -61,19 +63,21 @@ export const Login = () => {
                     },
                 ]}
             >
-                <Input prefix={<LockOutlined type={'lock'} style={{ fontsize: 13}}/>}
+                <Input.Password prefix={<LockOutlined type={'lock'} style={{ fontsize: 13}}/>}
                        type={"password"}
                        placeholder={"Mật khẩu"}
                 />
             </Form.Item>
-            <Form.Item {...tailLayout} name="remember" valuePropName="checked">
-                <Checkbox>Ghi nhớ đăng nhập</Checkbox>
-            </Form.Item>
-            <Form.Item {...tailLayout}>
-                <Button type="primary" htmlType="submit">
+            {/*<Form.Item {...tailLayout} name="remember" valuePropName="checked">*/}
+            {/*    <Checkbox>Ghi nhớ đăng nhập</Checkbox>*/}
+            {/*</Form.Item>*/}
+            <Form.Item >
+                <Button loading={loading} type="primary" htmlType="submit">
                     ĐĂNG NHẬP
                 </Button>
             </Form.Item>
         </Form>
+            </div>
+        </div>
     )
 }

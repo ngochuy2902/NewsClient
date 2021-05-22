@@ -1,0 +1,20 @@
+.Header {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    background-color: white;
+    padding: 10px 0;
+    z-index: 10;
+}
+
+@media (min-width: 1200px) {
+    .Header {
+        max-width: 80%;
+    }
+}
+
+@media (min-width: 800px) {
+    .Header {
+        max-width: 95%;
+    }
+}
