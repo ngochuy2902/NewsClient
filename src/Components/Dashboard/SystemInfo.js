@@ -2,11 +2,12 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import {Table} from "antd";
 import Moment from 'react-moment';
+import {findDOMNode} from "react-dom";
 
 export const SystemInfo = () => {
     const [session, setSession] = useState([])
 
-    function fetchSession() {
+    async function fetchSession() {
         axios.get('http://localhost:8080/api/admin/session', {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('token'),
@@ -41,17 +42,21 @@ export const SystemInfo = () => {
         {
             title: 'Thời gian kết thúc',
             dataIndex: 'finished_time',
-            render: (finished_time) => <p><Moment format={"DD/MM/YYYY hh:mm:ss"}>{finished_time}</Moment></p>
+            render: (finished_time) => {
+                if (finished_time) {
+                    return (<p><Moment format={"DD/MM/YYYY hh:mm:ss"}>{finished_time}</Moment></p>)
+                }
+            }
         },
         {
-            title: 'Hoàn thành',
-            dataIndex: 'completed',
-            render: (completed) => {if (completed) return <p>Đã hoàn thành</p>; return <p>Chưa hoàn thành</p>}
+            title: 'Trạng thái',
+            dataIndex: 'status',
+            render: (status) => <p>{status}</p>
         }
     ]
     return (
         <div>
-            <Table dataSource={session} columns={columns} rowKey={(record)=>record.id}/>
+            <Table dataSource={session} columns={columns} rowKey={(record) => record.id}/>
         </div>
     )
 }

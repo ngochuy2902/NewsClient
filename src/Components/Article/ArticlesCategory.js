@@ -15,7 +15,7 @@ export const ArticlesCategory = () => {
             .then(res => {
                 setArticles(res.data);
                 setAudio(res.data.map(article => {
-                    return {src: `http://localhost:3000/${article.audio_path}`}
+                    return {src: `${article.audio_path}`}
                 }));
 
             })
@@ -29,7 +29,7 @@ export const ArticlesCategory = () => {
     }, []);
     return (
         <div>
-
+            <h1></h1>
             {articles.map(article => (
                 <ArticleCard article={article} key={article.id}/>
             ))}

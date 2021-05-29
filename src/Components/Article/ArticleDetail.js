@@ -31,7 +31,7 @@ export const ArticleDetail = () => {
             <p style={{textAlign: "justify"}}>
                 {article.content}
             </p>
-            <Footer audios={[{src: `http://localhost:3000/${article.audio_path}`}]}/>
+            <Footer audios={[{src: `${article.audio_path}`}]}/>
         </div>
     )
 }

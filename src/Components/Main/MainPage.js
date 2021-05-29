@@ -19,7 +19,7 @@ export const MainPage = ({isLogin}) => {
             .then(res => {
                 setArticles(res.data);
                 setAudio(res.data.map(article => {
-                    return {src: article.audio_path.replace('/Users/huyhn/Study/DATN/', '')}
+                    return {src: `${article.audio_path}`}
                 }))
 
             })
@@ -33,9 +33,8 @@ export const MainPage = ({isLogin}) => {
             .then(res => {
                 setArticles(res.data);
                 setAudio(res.data.map(article => {
-                    return {src: article.audio_path.replace('/Users/huyhn/Study/DATN/', '')}
-                }))
-
+                    return {src: `${article.audio_path}`}
+                }));
             })
             .catch(error => {
                 console.log(error);
@@ -59,7 +58,7 @@ export const MainPage = ({isLogin}) => {
             <CategoryBar/>
             <Row gutter={24}>
                 {articles.map(article => (
-                    <Col sm={{span: 24}} md={{span: 8}} key={article.uuid_url}>
+                    <Col sm={{span: 24}} md={{span: 8}} key={article.id}>
                         <ArticleCard article={article}/>
                     </Col>
                 ))}
