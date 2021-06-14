@@ -35,8 +35,10 @@ export const Header = ({isLogin, setIsLogin, isAdmin, setIsAdmin}) => {
                     icon={<UserOutlined/>}
                 >
                     {isLogin? <>
-                        <Menu.Item key="me">
-                            Trang cá nhân
+                        <Menu.Item key="profile">
+                            <Link to={"/profile"}>
+                                Trang cá nhân
+                            </Link>
                         </Menu.Item>
                         {isAdmin? <>
                             <Menu.Item key="dashboard">

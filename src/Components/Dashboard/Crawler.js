@@ -21,7 +21,7 @@ export const Crawler = () => {
     }, [message]);
     return (
         <div>
-            <p>Bắt đầu thu thập báo</p>
+            <p>Bắt đầu phiên báo mới</p>
             <Button type={"primary"} onClick={callCrawler}>
                 Bắt đầu
             </Button>

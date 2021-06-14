@@ -2,7 +2,6 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import {Table} from "antd";
 import Moment from 'react-moment';
-import {findDOMNode} from "react-dom";
 
 export const SystemInfo = () => {
     const [session, setSession] = useState([])
@@ -37,14 +36,14 @@ export const SystemInfo = () => {
         {
             title: 'Thời gian bắt đầu',
             dataIndex: 'created_time',
-            render: (created_time) => <p><Moment format={"DD/MM/YYYY hh:mm:ss"}>{created_time}</Moment></p>
+            render: (created_time) => <p><Moment format={"DD/MM/YYYY HH:mm:ss"}>{created_time}</Moment></p>
         },
         {
             title: 'Thời gian kết thúc',
             dataIndex: 'finished_time',
             render: (finished_time) => {
                 if (finished_time) {
-                    return (<p><Moment format={"DD/MM/YYYY hh:mm:ss"}>{finished_time}</Moment></p>)
+                    return (<p><Moment format={"DD/MM/YYYY HH:mm:ss"}>{finished_time}</Moment></p>)
                 }
             }
         },

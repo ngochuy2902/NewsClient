@@ -11,12 +11,11 @@ export const ArticleCard = ({article}) => {
 
                 >
                     <small style={{textAlign: 'right', display: "block"}}>
-                        <Moment format={"DD/MM/YYYY hh:mm"}>{article.time}</Moment>
+                        <Moment format={"DD/MM/YYYY HH:mm"} utc={true}>{article.time}</Moment>
                     </small>
                     <p className={'line-clamp'}>{article.content} </p>
                 </Card>
             </Link>
         </div>
-
     )
 }

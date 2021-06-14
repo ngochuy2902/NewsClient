@@ -26,7 +26,7 @@ export const ArticleDetail = () => {
         <div className={"article-detail"}>
             <h1>{article.title}</h1>
             <small style={{textAlign: 'right', display: "block", paddingBottom: 15}}>
-                <Moment format={"DD/MM/YYYY hh:mm"}>{article.time}</Moment>
+                <Moment format={"DD/MM/YYYY HH:mm"} utc={true}>{article.time}</Moment>
             </small>
             <p style={{textAlign: "justify"}}>
                 {article.content}

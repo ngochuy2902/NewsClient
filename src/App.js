@@ -9,6 +9,7 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {ArticleDetail} from "./Components/Article/ArticleDetail";
 import {ArticlesCategory} from "./Components/Article/ArticlesCategory";
+import {Profile} from "./Components/Auth/Profile/Profile";
 
 function App() {
     const [isLogin, setIsLogin] = useState(false);
@@ -58,6 +59,9 @@ function App() {
                     </Route>
                     <Route path={"/login"}>
                         <Login isLogin={isLogin} setIsLogin={setIsLogin}/>
+                    </Route>
+                    <Route path={"/profile"}>
+                        <Profile/>
                     </Route>
                     <Route path={"/dashboard"}>
                         <Dashboard/>
